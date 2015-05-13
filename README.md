@@ -1,4 +1,4 @@
-stripe-chainable [![Build Status](https://travis-ci.org/FluidApps/arr-merge.svg?branch=master)](https://travis-ci.org/FluidApps/arr-merge)
+stripe-chainable [![Build Status](https://travis-ci.org/FluidApps/stripe-chainable.svg?branch=master)](https://travis-ci.org/FluidApps/stripe-chainable)
 ================
 
 Syntactic sugar for [stripe-node](https://github.com/stripe/stripe-node)
