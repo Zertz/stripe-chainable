@@ -1,0 +1,36 @@
+{
+  "name": "stripe-chainable",
+  "description": "Syntactic sugar for stripe-node",
+  "version": "0.1.0",
+  "homepage": "https://github.com/FluidApps/stripe-chainable",
+  "author": {
+    "name": "FluidApps",
+    "email": "info@fluidapps.ca",
+    "url": "https://fluidapps.ca"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/FluidApps/stripe-chainable.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+  },
+  "engines": {
+    "node": "~0.10.0"
+  },
+  "keywords": ["stripe", "chainable", "sugar"],
+  "dependencies": {
+    "lodash": "~3.8.0",
+    "stripe": "~3.3.0"
+  },
+  "devDependencies": {
+    "mocha": "~2.2.0",
+    "chai": "~2.3.0",
+    "sinon": "~1.14.0"
+  },
+  "licenses": [{
+    "type": "MIT",
+    "url": "http://github.com/FluidApps/stripe-chainable/raw/master/LICENSE"
+  }]
+}
