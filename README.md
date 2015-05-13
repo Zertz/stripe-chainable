@@ -1,4 +1,4 @@
-stripe-chainable
+stripe-chainable [![Build Status](https://travis-ci.org/FluidApps/arr-merge.svg?branch=master)](https://travis-ci.org/FluidApps/arr-merge)
 ================
 
 Syntactic sugar for [stripe-node](https://github.com/stripe/stripe-node)
@@ -72,7 +72,7 @@ The Stripe API limits the number of objects returned to 100. Fair enough, but wh
 need more?
 
 ```javascript
-stripe.find().all().charges((function(err, charges) {
+stripe.find().all().charges(function(err, charges) {
   // They're all here, automatically queried and concatenated.
 });
 ```
@@ -109,8 +109,10 @@ Does it work?
 
 Yes, according to [mocha](https://github.com/mochajs/mocha), [chai](https://github.com/chaijs/chai), [sinon](https://github.com/cjohansen/Sinon.JS/) and [istanbul](https://github.com/gotwarlost/istanbul).
 
-`npm install -g istanbul`
-`npm test`
+```
+npm install -g istanbul
+npm test
+```
 
 Who?
 ----
