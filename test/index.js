@@ -135,6 +135,14 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
+    it("does not add 'set' to the chain and returns itself", function() {
+      var self = stripe.set('key');
+      
+      expect(stripe._chain).to.be.empty;
+      expect(stripe._stripeOptions['key']).to.be.undefined;
+      expect(self).to.equal(stripe);
+    });
+    
     it("adds 'charges' to the chain and returns itself", function() {
       var self = stripe.charges();
       
@@ -287,6 +295,14 @@ describe("stripe-chainable", function() {
       
       expect(stripe._chain).to.have.members(['include']);
       expect(stripe._stripeOptions['include[]']).to.equal('key');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("does not add 'include' to the chain, sets 'include[]' and returns itself", function() {
+      var self = stripe.set('key', 'value');
+      
+      expect(stripe._chain).to.be.empty;
+      expect(stripe._stripeOptions['key']).to.equal('value');
       expect(self).to.equal(stripe);
     });
   });
