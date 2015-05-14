@@ -10,7 +10,7 @@ stripe.find().last(150).charges(function(err, charges) {
 ```
 
 ```javascript
-stripe.entire().history().of().charges().since(new Date(2015, 0, 1)).please(function(err, balance) {
+stripe.entire().charges().history().since(new Date(2015, 0, 1)).please(function(err, balance) {
   // What he said
 });
 ```
