@@ -1,4 +1,4 @@
-stripe-chainable [![Build Status](https://travis-ci.org/FluidApps/stripe-chainable.svg?branch=master)](https://travis-ci.org/FluidApps/stripe-chainable)
+stripe-chainable [![Build Status](https://travis-ci.org/FluidApps/stripe-chainable.svg?branch=master)](https://travis-ci.org/FluidApps/stripe-chainable) [![npm package](https://badge.fury.io/js/stripe-chainable.svg)](https://www.npmjs.com/package/stripe-chainable)
 ================
 
 Syntactic sugar for [stripe-node](https://github.com/stripe/stripe-node)
