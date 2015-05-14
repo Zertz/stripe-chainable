@@ -12,13 +12,17 @@ describe("stripe-chainable", function() {
     stripe._chain = [];
     
     stripe._options = {
-      _retrieveAll: false
+      retrieveAll: false
     };
     
     stripe._stripeOptions = {
-      _type: undefined,
-      _limit: undefined,
+      type: undefined,
+      limit: undefined,
       "include[]": undefined
+    };
+    
+    stripe._stripeExtras = {
+      stripe_account: undefined
     };
   };
   
@@ -135,11 +139,11 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
-    it("does not add 'set' to the chain and returns itself", function() {
-      var self = stripe.set('key');
+    it("setAccount does not add anything to the chain and returns itself", function() {
+      var self = stripe.setAccount();
       
       expect(stripe._chain).to.be.empty;
-      expect(stripe._stripeOptions['key']).to.be.undefined;
+      expect(stripe._stripeExtras.stripe_account).to.be.undefined;
       expect(self).to.equal(stripe);
     });
     
@@ -298,11 +302,11 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
-    it("does not add 'include' to the chain, sets 'include[]' and returns itself", function() {
-      var self = stripe.set('key', 'value');
+    it("setAccount does not add anything to the chain, sets 'stripe_account' and returns itself", function() {
+      var self = stripe.setAccount('acct_x');
       
       expect(stripe._chain).to.be.empty;
-      expect(stripe._stripeOptions['key']).to.equal('value');
+      expect(stripe._stripeExtras.stripe_account).to.equal('acct_x');
       expect(self).to.equal(stripe);
     });
   });
