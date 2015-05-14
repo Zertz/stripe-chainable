@@ -28,6 +28,9 @@ describe("stripe-chainable", function() {
   
   beforeEach(function() {
     stripe._stripe = {
+      balance: {
+        listTransactions: function(options, callback) {}
+      },
       charges: {
         list: function(options, callback) {}
       },
@@ -75,10 +78,17 @@ describe("stripe-chainable", function() {
   });
   
   describe("chainable operators by themselves, without parameters", function() {
-    beforeEach(resetPrivate)
+    beforeEach(resetPrivate);
     
-    it("adds 'and' to the chain and returns itself", function() {
+    it("'and' adds nothing to the chain and returns itself", function() {
       var self = stripe.and();
+      
+      expect(stripe._chain).to.be.empty;
+      expect(self).to.equal(stripe);
+    });
+    
+    it("'of' adds nothing to the chain and returns itself", function() {
+      var self = stripe.of();
       
       expect(stripe._chain).to.be.empty;
       expect(self).to.equal(stripe);
@@ -109,8 +119,26 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
+    it("'last' adds nothing to the chain and throws an error", function() {
+      expect(function() {
+        stripe.last();
+      }).to.throw("last() must be called with a numeric value");
+      
+      expect(stripe._chain).to.be.empty;
+    });
+    
     it("adds 'all' to the chain and returns itself", function() {
       var self = stripe.all();
+      
+      expect(stripe._chain).to.have.members(['all']);
+      expect(stripe._stripeOptions.limit).to.equal(100);
+      expect(stripe._options.retrieveAll).to.be.true;
+      expect(stripe._options.type).to.be.undefined;
+      expect(self).to.equal(stripe);
+    });
+    
+    it("'entire' adds 'all' to the chain and returns itself", function() {
+      var self = stripe.entire();
       
       expect(stripe._chain).to.have.members(['all']);
       expect(stripe._stripeOptions.limit).to.equal(100);
@@ -174,6 +202,14 @@ describe("stripe-chainable", function() {
       
       expect(stripe._chain).to.be.empty;
       expect(stripe._stripeExtras.stripe_account).to.be.undefined;
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'history' to the chain and returns itself", function() {
+      var self = stripe.history();
+      
+      expect(stripe._chain).to.have.members(['history']);
+      expect(stripe._options.type).to.be.undefined;
       expect(self).to.equal(stripe);
     });
     
@@ -312,6 +348,23 @@ describe("stripe-chainable", function() {
       expect(stripe._stripeOptions.limit).to.equal(10);
       expect(stripe._options.retrieveAll).to.be.false;
       expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'last' to the chain, sets 'limit' and returns itself", function() {
+      var self = stripe.last(10);
+      
+      expect(stripe._chain).to.have.members(['last']);
+      expect(stripe._stripeOptions.limit).to.equal(10);
+      expect(stripe._options.retrieveAll).to.be.false;
+      expect(self).to.equal(stripe);
+    });
+    
+    it("'last' adds nothing to the chain and throws an error", function() {
+      expect(function() {
+        stripe.last('not a number');
+      }).to.throw("last() must be called with a numeric value");
+      
+      expect(stripe._chain).to.be.empty;
     });
     
     it("adds 'before' to the chain, sets 'ending_before' and returns itself", function() {
@@ -465,7 +518,7 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
-    it("adds 'charges' to the chain and calls callback with an error", function() {
+    it("adds 'charges' to the chain, calls list's callback with an error", function() {
       var callbackSpy = sinon.spy();
           
       var listStub = sinon.stub(stripe._stripe.charges, 'list');
@@ -475,6 +528,20 @@ describe("stripe-chainable", function() {
       
       expect(stripe._chain).to.have.members(['charges']);
       expect(stripe._options.type).to.equal('charge');
+      sinon.assert.calledOnce(callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds nothing to the chain, calls listTransactions' callback with an error", function() {
+      var callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.balance, 'listTransactions');
+      listStub.yields(stripe._stripe._errors.invalid_request_error);
+      
+      var self = stripe.listTransactions(callbackSpy);
+      
+      expect(stripe._chain).to.be.empty;
+      expect(stripe._options.type).to.be.undefined;
       sinon.assert.calledOnce(callbackSpy);
       expect(self).to.equal(stripe);
     });
@@ -753,6 +820,146 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
+    it("adds 'last' and 'charges' to the chain, calls progress twice and then callback once", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.charges, 'list');
+      listStub.onFirstCall().yields(null, {
+        "has_more": true,
+        "data": [{
+          "id": "ch_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      listStub.onSecondCall().yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "ch_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.last(150).charges(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['last', 'charges']);
+      expect(stripe._options.type).to.equal('charge');
+      sinon.assert.calledTwice(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'history' and 'charges' to the chain and calls callback", function() {
+      var callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.balance, 'listTransactions');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "txn_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.history().charges(callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['history', 'charges']);
+      expect(stripe._options.type).to.equal('charge');
+      sinon.assert.calledOnce(callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'history' and 'charges' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.balance, 'listTransactions');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "txn_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.history().charges(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['history', 'charges']);
+      expect(stripe._options.type).to.equal('charge');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'history' and 'charges' to the chain, calls progress twice and then callback once", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.balance, 'listTransactions');
+      listStub.onFirstCall().yields(null, {
+        "has_more": true,
+        "data": [{
+          "id": "txn_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      listStub.onSecondCall().yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "txn_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.entire().history().of().charges(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['all', 'history', 'charges']);
+      expect(stripe._options.type).to.equal('charge');
+      sinon.assert.calledTwice(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'history' and 'charges' to the chain, calls progress twice and then callback once", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.balance, 'listTransactions');
+      listStub.onFirstCall().yields(null, {
+        "has_more": true,
+        "data": [{
+          "id": "txn_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      listStub.onSecondCall().yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "txn_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.last(150).charges().history().please(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['last', 'charges', 'history']);
+      expect(stripe._options.type).to.equal('charge');
+      sinon.assert.calledTwice(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("sets type 'foo', calls 'listTransactions' and throws an error", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy(),
+          self;
+      
+      expect(function() {
+        stripe._options.type = 'foo';
+        self = stripe.listTransactions(progressSpy, callbackSpy);
+      }).to.throw("listTransactions() must be called without context or in context of a valid Stripe object (charges, refunds, etc)");
+      
+      sinon.assert.notCalled(progressSpy);
+      sinon.assert.notCalled(callbackSpy);
+      expect(self).to.be.undefined;
+    });
+    
     it("adds 'all' to the chain, calls 'list' and throws an error", function() {
       var progressSpy = sinon.spy(),
           callbackSpy = sinon.spy(),
@@ -760,7 +967,7 @@ describe("stripe-chainable", function() {
           
       expect(function() {
         self = stripe.all().list(progressSpy, callbackSpy);
-      }).to.throw("list() must be called in context of a Stripe object (charge, refund, etc)");
+      }).to.throw("list() must be called in context of a Stripe object (charges, refunds, etc)");
       
       expect(stripe._chain).to.have.members(['all']);
       expect(stripe._options.type).to.be.undefined;
@@ -776,7 +983,7 @@ describe("stripe-chainable", function() {
           
       expect(function() {
         self = stripe.list(progressSpy, callbackSpy);
-      }).to.throw("list() must be called in context of a Stripe object (charge, refund, etc)");
+      }).to.throw("list() must be called in context of a Stripe object (charges, refunds, etc)");
       
       expect(stripe._chain).to.be.empty;
       expect(stripe._options.type).to.be.undefined;

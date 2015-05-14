@@ -3,6 +3,18 @@ stripe-chainable [![Build Status](https://travis-ci.org/FluidApps/stripe-chainab
 
 Syntactic sugar for [stripe-node](https://github.com/stripe/stripe-node)
 
+```javascript
+stripe.find().last(150).charges(function(err, charges) {
+  // 'nuff said
+});
+```
+
+```javascript
+stripe.find().entire().history().of().charges().since(new Date(2015, 0, 1)).please(function(err, balance) {
+  // What he said
+});
+```
+
 Why?
 ----
 
@@ -37,10 +49,13 @@ Akin to assertion frameworks, `stripe-chainable` provides keywords to build quer
 English.
 
 - `and()`: pure sugar
+- `of()`: pure sugar
 - `since(date)`: alias for `from()`, except date is mandatory
 - `until([date])`: alias for `to()`
-- `find()`: sugar and allows setting a limit
+- `find()`: sugar allowing to set a limit
+- `last(number)`: limits results to this value
 - `all()`: queries the Stripe API until all the objects are returned
+- `entire()`: alias for `all()`
 - `before([mixed])`: may be called with a date or used as a synonym for `ending_before`
 - `after([mixed])`: may be called with a date or used as a synonym for `starting_after`
 - `from([date])`: may be called with a date (inclusive)
@@ -67,6 +82,8 @@ executing a chain.
 - `list(progress, callback)`
 - `history(callback)`
 - `history(progress, callback)`
+- `please(callback)`
+- `please(progress, callback)`
 
 **Supported objects**
 
@@ -121,8 +138,10 @@ stripe.find().all().charges(function(err, charges) {
 All methods return `this`, making it possible to chain anything with anything. Here are a
 few examples.
 
+#### List
+
 ```javascript
-stripe.find().all().charges().since(new Date(2015, 0, 1)).list(function(err, charges) {
+stripe.find().all().charges().since(new Date(2015, 0, 1)).please(function(err, charges) {
   // All charges in 2015 up until now
 });
 ```
@@ -136,6 +155,20 @@ stripe.find(50).charges().after(new Date(2014, 11, 31)).and().before(new Date(20
 ```javascript
 stripe.find().all().charges().from(new Date(2015, 0, 1)).to(new Date(2015, 0, 31)).list(function(err, charges) {
   // All charges during January 2015
+});
+```
+
+#### Balance
+
+```javascript
+stripe.find().entire().history().of().charges().since(new Date(2015, 0, 1)).and().include('total_count').please(function(progress, total) {
+  console.info('%d / %d', progress, total);
+}, function(err, charges) {
+  if (err) {
+    return next(err);
+  }
+  
+  res.status(200).json(charges);
 });
 ```
 
