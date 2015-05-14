@@ -10,7 +10,7 @@ stripe.find().last(150).charges(function(err, charges) {
 ```
 
 ```javascript
-stripe.entire().charges().history().since(new Date(2015, 0, 1)).please(function(err, balance) {
+stripe.find().entire().charges().history().since(new Date(2015, 0, 1)).please(function(err, balance) {
   // What he said
 });
 ```
@@ -75,11 +75,9 @@ The following values are returned:
 - `progress(current, total)`
 - `callback(err, objects)`
 
-It's often clearer to set context early in a sentence. These methods may be used for
-executing a chain.
+It's often clearer to set context early in a sentence and execute later. These methods may be used
+for executing a chain.
 
-- `list(callback)`
-- `list(progress, callback)`
 - `please(callback)`
 - `please(progress, callback)`
 
@@ -145,13 +143,13 @@ stripe.find().all().charges().since(new Date(2015, 0, 1)).please(function(err, c
 ```
 
 ```javascript
-stripe.find(50).customers().after(new Date(2014, 11, 31)).and().before(new Date(2015, 1, 1)).list(function(err, charges) {
+stripe.find(50).customers().after(new Date(2014, 11, 31)).and().before(new Date(2015, 1, 1)).please(function(err, charges) {
   // Last 50 charges of January 2015
 });
 ```
 
 ```javascript
-stripe.find().all().refunds().from(new Date(2015, 0, 1)).to(new Date(2015, 0, 31)).list(function(err, charges) {
+stripe.find().all().refunds().from(new Date(2015, 0, 1)).to(new Date(2015, 0, 31)).please(function(err, charges) {
   // All charges during January 2015
 });
 ```
