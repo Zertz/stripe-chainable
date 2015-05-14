@@ -48,21 +48,60 @@ English.
 - `now()`: chain with `to()` or `until()`
 - `include(key)`: sets the `include[]` key, Stripe only makes `total_count` available at the moment
 
-The following methods set the type of object to query and may be used in various ways.
+The following methods set the type of object to query and may be used in various ways:
 
-- `charges()`: for chaining
+- `charges()`: sets object context
 - `charges(callback)` and `charges(progress, callback)`: for executing
+
+> Complete list of supported objects below
 
 The following values are returned:
 
-- `progress`: `(current, total)`
-- `callback`: `(err, objects)` 
+- `progress(current, total)`
+- `callback(err, objects)`
 
 It's often clearer to set context early in a sentence. These methods may be used for
 executing a chain.
 
 - `list(callback)`
 - `list(progress, callback)`
+- `balance(callback)`
+- `balance(progress, callback)`
+
+**Supported objects**
+
+- Charges
+- Refunds
+- Customers
+- Plans
+- Coupons
+- Accounts (Stripe only supports the `limit` argument)
+
+> The Balance object is supported through the `history()` method 
+
+**Objects with limited support**
+
+- Invoices (without the `customer` argument)
+- Invoice items (without the `customer` argument)
+- Transfers (without the `date` and `status` arguments)
+- Applications fees (without the `charge` argument)
+- Events (without the `type` argument)
+- File uploads (without the `purpose` argument)
+
+**Currently unsupported objects**
+
+- Cards
+- Subscriptions
+- Discounts
+- Disputes
+- Transfer reversals
+- Application fee refunds
+- Tokens
+- Bitcoin receivers
+
+Deprecated objects are unsupported:
+
+- Recipients
 
 ### Feature
 
@@ -76,10 +115,6 @@ stripe.find().all().charges(function(err, charges) {
   // They're all here, automatically queried and concatenated.
 });
 ```
-
-This works across all supported endpoints, which are currently limited to charges and refunds.
-
-More to come. Soon. Promise.
 
 ### Wait, what?
 
