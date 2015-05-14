@@ -213,6 +213,38 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
+    it("adds 'adjustments' to the chain and returns itself", function() {
+      var self = stripe.adjustments();
+      
+      expect(stripe._chain).to.have.members(['adjustments']);
+      expect(stripe._options.type).to.equal('adjustment');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'applicationFeeRefunds' to the chain and returns itself", function() {
+      var self = stripe.applicationFeeRefunds();
+      
+      expect(stripe._chain).to.have.members(['applicationFeeRefunds']);
+      expect(stripe._options.type).to.equal('applicationFeeRefund');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'transfers' to the chain and returns itself", function() {
+      var self = stripe.transfers();
+      
+      expect(stripe._chain).to.have.members(['transfers']);
+      expect(stripe._options.type).to.equal('transfer');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'transferFailures' to the chain and returns itself", function() {
+      var self = stripe.transferFailures();
+      
+      expect(stripe._chain).to.have.members(['transferFailures']);
+      expect(stripe._options.type).to.equal('transferFailure');
+      expect(self).to.equal(stripe);
+    });
+    
     it("adds 'charges' to the chain and returns itself", function() {
       var self = stripe.charges();
       

@@ -38,7 +38,7 @@ Exactly the same as, well, Stripe.
 
 `var stripe = require('stripe-chainable')(key[, version]);`
 
-Your key goes straight to Stripe's module, not even an internal reference is kept.
+> Your key goes straight to Stripe's module, not even an internal reference is kept.
 
 What?
 ----- 
@@ -80,8 +80,6 @@ executing a chain.
 
 - `list(callback)`
 - `list(progress, callback)`
-- `history(callback)`
-- `history(progress, callback)`
 - `please(callback)`
 - `please(progress, callback)`
 
@@ -93,6 +91,8 @@ executing a chain.
 - Plans
 - Coupons
 - Accounts (Stripe only supports the `limit` argument)
+- Balance history (through the `history()` method)
+  - Optional `type` set through object context methods (`charges()`, `refunds()`, etc)
 
 **Objects with limited support**
 
@@ -105,8 +105,6 @@ executing a chain.
 
 **Currently unsupported objects**
 
-> The Balance object **will be** supported through the `history()` method
-
 - Cards
 - Subscriptions
 - Discounts
@@ -116,7 +114,7 @@ executing a chain.
 - Tokens
 - Bitcoin receivers
 
-Deprecated objects are unsupported:
+**Objects deprecated by Stripe are unsupported**
 
 - Recipients
 
@@ -135,7 +133,7 @@ stripe.find().all().charges(function(err, charges) {
 
 ### Wait, what?
 
-All methods return `this`, making it possible to chain anything with anything. Here are a
+All methods return `this`, making it possible to chain anything with (almost) anything. Here are a
 few examples.
 
 #### List
@@ -147,13 +145,13 @@ stripe.find().all().charges().since(new Date(2015, 0, 1)).please(function(err, c
 ```
 
 ```javascript
-stripe.find(50).charges().after(new Date(2014, 11, 31)).and().before(new Date(2015, 1, 1)).list(function(err, charges) {
+stripe.find(50).customers().after(new Date(2014, 11, 31)).and().before(new Date(2015, 1, 1)).list(function(err, charges) {
   // Last 50 charges of January 2015
 });
 ```
 
 ```javascript
-stripe.find().all().charges().from(new Date(2015, 0, 1)).to(new Date(2015, 0, 31)).list(function(err, charges) {
+stripe.find().all().refunds().from(new Date(2015, 0, 1)).to(new Date(2015, 0, 31)).list(function(err, charges) {
   // All charges during January 2015
 });
 ```
@@ -161,7 +159,7 @@ stripe.find().all().charges().from(new Date(2015, 0, 1)).to(new Date(2015, 0, 31
 #### Balance
 
 ```javascript
-stripe.find().entire().history().of().charges().since(new Date(2015, 0, 1)).and().include('total_count').please(function(progress, total) {
+stripe.entire().history().of().applicationFees().since(new Date(2015, 0, 1)).and().include('total_count').please(function(progress, total) {
   console.info('%d / %d', progress, total);
 }, function(err, charges) {
   if (err) {
