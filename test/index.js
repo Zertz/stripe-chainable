@@ -127,10 +127,10 @@ describe("stripe-chainable", function() {
       expect(stripe._chain).to.be.empty;
     });
     
-    it("adds 'include' to the chain and returns itself", function() {
+    it("does not add 'include' to the chain and returns itself", function() {
       var self = stripe.include();
       
-      expect(stripe._chain).to.have.members(['include']);
+      expect(stripe._chain).to.be.empty;
       expect(stripe._stripeOptions['include[]']).to.be.undefined;
       expect(self).to.equal(stripe);
     });
@@ -290,10 +290,10 @@ describe("stripe-chainable", function() {
       expect(stripe._chain).to.have.members(['to']);
     });
     
-    it("adds 'include' to the chain, sets 'include[]' and returns itself", function() {
+    it("does not add 'include' to the chain, sets 'include[]' and returns itself", function() {
       var self = stripe.include('key');
       
-      expect(stripe._chain).to.have.members(['include']);
+      expect(stripe._chain).to.be.empty;
       expect(stripe._stripeOptions['include[]']).to.equal('key');
       expect(self).to.equal(stripe);
     });
