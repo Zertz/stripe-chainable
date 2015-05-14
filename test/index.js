@@ -34,6 +34,36 @@ describe("stripe-chainable", function() {
       refunds: {
         list: function(options, callback) {}
       },
+      customers: {
+        list: function(options, callback) {}
+      },
+      plans: {
+        list: function(options, callback) {}
+      },
+      coupons: {
+        list: function(options, callback) {}
+      },
+      invoices: {
+        list: function(options, callback) {}
+      },
+      invoiceItems: {
+        list: function(options, callback) {}
+      },
+      transfers: {
+        list: function(options, callback) {}
+      },
+      applicationFees: {
+        list: function(options, callback) {}
+      },
+      accounts: {
+        list: function(options, callback) {}
+      },
+      events: {
+        list: function(options, callback) {}
+      },
+      fileUploads: {
+        list: function(options, callback) {}
+      },
       _errors: {
         invalid_request_error: (function() {
           var err = new Error("invalid_request_error");
@@ -151,7 +181,7 @@ describe("stripe-chainable", function() {
       var self = stripe.charges();
       
       expect(stripe._chain).to.have.members(['charges']);
-      expect(stripe._options.type).to.equal('charges');
+      expect(stripe._options.type).to.equal('charge');
       expect(self).to.equal(stripe);
     });
     
@@ -159,7 +189,87 @@ describe("stripe-chainable", function() {
       var self = stripe.refunds();
       
       expect(stripe._chain).to.have.members(['refunds']);
-      expect(stripe._options.type).to.equal('refunds');
+      expect(stripe._options.type).to.equal('refund');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'customers' to the chain and returns itself", function() {
+      var self = stripe.customers();
+      
+      expect(stripe._chain).to.have.members(['customers']);
+      expect(stripe._options.type).to.equal('customer');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'plans' to the chain and returns itself", function() {
+      var self = stripe.plans();
+      
+      expect(stripe._chain).to.have.members(['plans']);
+      expect(stripe._options.type).to.equal('plan');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'coupons' to the chain and returns itself", function() {
+      var self = stripe.coupons();
+      
+      expect(stripe._chain).to.have.members(['coupons']);
+      expect(stripe._options.type).to.equal('coupon');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'invoices' to the chain and returns itself", function() {
+      var self = stripe.invoices();
+      
+      expect(stripe._chain).to.have.members(['invoices']);
+      expect(stripe._options.type).to.equal('invoice');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'invoiceItems' to the chain and returns itself", function() {
+      var self = stripe.invoiceItems();
+      
+      expect(stripe._chain).to.have.members(['invoiceItems']);
+      expect(stripe._options.type).to.equal('invoiceItem');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'transfers' to the chain and returns itself", function() {
+      var self = stripe.transfers();
+      
+      expect(stripe._chain).to.have.members(['transfers']);
+      expect(stripe._options.type).to.equal('transfer');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'applicationFees' to the chain and returns itself", function() {
+      var self = stripe.applicationFees();
+      
+      expect(stripe._chain).to.have.members(['applicationFees']);
+      expect(stripe._options.type).to.equal('applicationFee');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'accounts' to the chain and returns itself", function() {
+      var self = stripe.accounts();
+      
+      expect(stripe._chain).to.have.members(['accounts']);
+      expect(stripe._options.type).to.equal('account');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'events' to the chain and returns itself", function() {
+      var self = stripe.events();
+      
+      expect(stripe._chain).to.have.members(['events']);
+      expect(stripe._options.type).to.equal('event');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'fileUploads' to the chain and returns itself", function() {
+      var self = stripe.fileUploads();
+      
+      expect(stripe._chain).to.have.members(['fileUploads']);
+      expect(stripe._options.type).to.equal('fileUpload');
       expect(self).to.equal(stripe);
     });
   });
@@ -329,7 +439,7 @@ describe("stripe-chainable", function() {
       var self = stripe.charges(progressSpy, callbackSpy);
       
       expect(stripe._chain).to.have.members(['charges']);
-      expect(stripe._options.type).to.be.undefined;
+      expect(stripe._options.type).to.equal('charge');
       sinon.assert.calledOnce(progressSpy);
       sinon.assert.calledOnce(callbackSpy);
       sinon.assert.callOrder(progressSpy, callbackSpy);
@@ -350,7 +460,7 @@ describe("stripe-chainable", function() {
       var self = stripe.charges(callbackSpy);
       
       expect(stripe._chain).to.have.members(['charges']);
-      expect(stripe._options.type).to.be.undefined;
+      expect(stripe._options.type).to.equal('charge');
       sinon.assert.calledOnce(callbackSpy);
       expect(self).to.equal(stripe);
     });
@@ -364,7 +474,7 @@ describe("stripe-chainable", function() {
       var self = stripe.charges(callbackSpy);
       
       expect(stripe._chain).to.have.members(['charges']);
-      expect(stripe._options.type).to.be.undefined;
+      expect(stripe._options.type).to.equal('charge');
       sinon.assert.calledOnce(callbackSpy);
       expect(self).to.equal(stripe);
     });
@@ -384,7 +494,227 @@ describe("stripe-chainable", function() {
       var self = stripe.refunds(progressSpy, callbackSpy);
       
       expect(stripe._chain).to.have.members(['refunds']);
-      expect(stripe._options.type).to.be.undefined;
+      expect(stripe._options.type).to.equal('refund');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'customers' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.customers, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "cus_xxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.customers(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['customers']);
+      expect(stripe._options.type).to.equal('customer');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'plans' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.plans, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "gold"
+        }]
+      });
+      
+      var self = stripe.plans(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['plans']);
+      expect(stripe._options.type).to.equal('plan');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'coupons' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.coupons, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "25OFF"
+        }]
+      });
+      
+      var self = stripe.coupons(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['coupons']);
+      expect(stripe._options.type).to.equal('coupon');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'invoices' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.invoices, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "in_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.invoices(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['invoices']);
+      expect(stripe._options.type).to.equal('invoice');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'invoiceItems' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.invoiceItems, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "ii_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.invoiceItems(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['invoiceItems']);
+      expect(stripe._options.type).to.equal('invoiceItem');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'transfers' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.transfers, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "tr_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.transfers(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['transfers']);
+      expect(stripe._options.type).to.equal('transfer');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'applicationFees' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.applicationFees, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "fee_xxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.applicationFees(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['applicationFees']);
+      expect(stripe._options.type).to.equal('applicationFee');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'accounts' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.accounts, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "acct_xxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.accounts(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['accounts']);
+      expect(stripe._options.type).to.equal('account');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'events' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.events, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "evt_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.events(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['events']);
+      expect(stripe._options.type).to.equal('event');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'fileUploads' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.fileUploads, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "file_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.fileUploads(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['fileUploads']);
+      expect(stripe._options.type).to.equal('fileUpload');
       sinon.assert.calledOnce(progressSpy);
       sinon.assert.calledOnce(callbackSpy);
       sinon.assert.callOrder(progressSpy, callbackSpy);
@@ -416,7 +746,7 @@ describe("stripe-chainable", function() {
       var self = stripe.all().charges(progressSpy, callbackSpy);
       
       expect(stripe._chain).to.have.members(['all', 'charges']);
-      expect(stripe._options.type).to.be.undefined;
+      expect(stripe._options.type).to.equal('charge');
       sinon.assert.calledTwice(progressSpy);
       sinon.assert.calledOnce(callbackSpy);
       sinon.assert.callOrder(progressSpy, progressSpy, callbackSpy);
@@ -430,7 +760,7 @@ describe("stripe-chainable", function() {
           
       expect(function() {
         self = stripe.all().list(progressSpy, callbackSpy);
-      }).to.throw("list() must be preceded by a object method (charges, refunds, etc)");
+      }).to.throw("list() must be called in context of a Stripe object (charge, refund, etc)");
       
       expect(stripe._chain).to.have.members(['all']);
       expect(stripe._options.type).to.be.undefined;
@@ -446,7 +776,7 @@ describe("stripe-chainable", function() {
           
       expect(function() {
         self = stripe.list(progressSpy, callbackSpy);
-      }).to.throw("list() must be preceded by a object method (charges, refunds, etc)");
+      }).to.throw("list() must be called in context of a Stripe object (charge, refund, etc)");
       
       expect(stripe._chain).to.be.empty;
       expect(stripe._options.type).to.be.undefined;
@@ -469,7 +799,7 @@ describe("stripe-chainable", function() {
       
       var self = stripe.all().charges().until().now().list(progressSpy, callbackSpy);
       expect(stripe._chain).to.have.members(['all', 'charges', 'to', 'now']);
-      expect(stripe._options.type).to.equal('charges');
+      expect(stripe._options.type).to.equal('charge');
       sinon.assert.calledOnce(progressSpy);
       sinon.assert.calledOnce(callbackSpy);
       sinon.assert.callOrder(progressSpy, callbackSpy);
