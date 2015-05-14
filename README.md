@@ -65,8 +65,8 @@ executing a chain.
 
 - `list(callback)`
 - `list(progress, callback)`
-- `balance(callback)`
-- `balance(progress, callback)`
+- `history(callback)`
+- `history(progress, callback)`
 
 **Supported objects**
 
@@ -76,8 +76,6 @@ executing a chain.
 - Plans
 - Coupons
 - Accounts (Stripe only supports the `limit` argument)
-
-> The Balance object is supported through the `history()` method 
 
 **Objects with limited support**
 
@@ -89,6 +87,8 @@ executing a chain.
 - File uploads (without the `purpose` argument)
 
 **Currently unsupported objects**
+
+> The Balance object **will be** supported through the `history()` method
 
 - Cards
 - Subscriptions
