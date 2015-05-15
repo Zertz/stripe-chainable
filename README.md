@@ -62,11 +62,12 @@ English.
 - `are(string)`: sets a status
 - `type(string)`: sets an event type
 
+- `available()`: tells the following time-based methods to set `available_on` instead of `created`
 - `before([mixed])`: may be called with a date or used as a synonym for `ending_before`
 - `after([mixed])`: may be called with a date or used as a synonym for `starting_after`
 - `from([date])`: may be called with a date (inclusive)
 - `to([date])`: may be called with a date (inclusive)
-- `now()`: chain with `to()` or `until()`
+- `now()`: chain with `to()`, `until()`
 
 - `include(key)`: sets the `include[]` key, Stripe only makes `total_count` available at the moment
 - `setAccount(acct_id)`: sets the account id to use (for Stripe Connect users)
@@ -110,25 +111,21 @@ for executing a chain:
 **Supported objects**
 
 - Charges
-  - Optional `customer` argument set with `for('ch_id')`)
+  - `customer` set with `for('cus_id')`)
 - Customers
 - Plans
 - Coupons
 - Invoices
 - Invoice items
-  - Optional `customer` argument set with `for('ch_id')`)
+  - `customer` set with `for('cus_id')`
 - Applications fees
-  - Optional `charge` argument set with `for('ch_id')`)
+  - `charge` set with `for('ch_id')`
 - Accounts
-  - Stripe does not support filtering on this object
-- Balance history (through the `history()` method)
-  - Optional `type` set through object context methods (`charges()`, `refunds()`, etc)
+  - Note: Stripe does not support filtering on this object
 - Events
-  - Optional `type` argument set with `type('type')`
-  - [Stripe API reference](https://stripe.com/docs/api/node#event_types)
+  - `type` set with `type('type')`, [list of types](https://stripe.com/docs/api/node#event_types)
 - File uploads
-  - Optional `purpose` argument set with `for('purpose')`)
-  - [Stripe API reference](https://stripe.com/docs/api/node#file_upload_object)
+  - `purpose` argument set with `for('purpose')`, [list of purposes](https://stripe.com/docs/api/node#file_upload_object)
 
 **Partially supported objects**
 
@@ -137,9 +134,15 @@ for executing a chain:
 - Disputes
   - Strictly through adjustments with Balance history (`adjustments().history()`)
 - Transfers
-  - The `status` argument is supported, but not `date` nor `recipient`
+  - `status` set with `are('status')`, [list of statuses](https://stripe.com/docs/api/node#list_transfers)
+  - `date` and `recipient` are not supported at the moment
+- Balance history (through the `history()` method)
+  - `available_on` set by preceding time-based methods (`from()`, `to()`, etc) by `available()`
+  - `type` set through object context methods (`charges()`, `refunds()`, etc)
+  - `source` set with `for('ch_id')`
+  - `currency` and `transfer` are not supported at the moment
 - Bitcoin receivers
-  - Without the `active`, `filled` and `uncaptured_funds` arguments
+  - `active`, `filled` and `uncaptured_funds` are not supported at the moment
 
 **Currently unsupported objects**
 
@@ -204,6 +207,14 @@ stripe.entire().history().of().applicationFees().since(new Date(2015, 0, 1)).and
   }
   
   res.status(200).json(charges);
+});
+```
+
+```javascript
+stripe.entire().history().available().from(new Date(2015, 4, 1)).please(function(progress, total) {
+  console.info('%d / %d', progress, total);
+}, function(err, charges) {
+  // Self-explanatory
 });
 ```
 

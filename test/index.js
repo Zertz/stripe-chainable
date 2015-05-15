@@ -10,13 +10,11 @@ describe("stripe-chainable", function() {
   
   var resetPrivate = function() {
     stripe._chain = [];
-    stripe._options = {},
-    stripe._stripeOptions = {},
-    stripe._stripeExtras = {}
+    stripe._options = {};
+    stripe._stripeOptions = {};
   };
   
   beforeEach(function() {
-    stripe._reset = function() {};
     stripe._stripe = {
       balance: {
         listTransactions: function(options, callback) {}
@@ -65,6 +63,20 @@ describe("stripe-chainable", function() {
         })()
       }
     };
+  });
+  
+  describe("reset private variables", function() {
+    it("does that", function() {
+      stripe.all()._reset();
+      
+      expect(stripe._chain).to.be.empty;
+      expect(stripe._options).to.be.empty;
+      expect(stripe._stripeOptions).to.be.empty;
+    });
+    
+    after(function() {
+      stripe._reset = function() {};
+    });
   });
   
   describe("chainable operators by themselves, without parameters", function() {
@@ -167,6 +179,13 @@ describe("stripe-chainable", function() {
       expect(stripe._stripeOptions.limit).to.equal(100);
       expect(stripe._options.retrieveAll).to.be.true;
       expect(stripe._options.type).to.be.undefined;
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'available' to the chain and returns itself", function() {
+      var self = stripe.available();
+      
+      expect(stripe._chain).to.have.members(['available']);
       expect(self).to.equal(stripe);
     });
     
@@ -620,6 +639,56 @@ describe("stripe-chainable", function() {
       
       expect(stripe._chain).to.have.members(['for']);
       expect(stripe._stripeOptions.purpose).to.equal('identity_document');
+      expect(self).to.equal(stripe);
+    });
+  });
+  
+  describe("combine chainable operators", function() {
+    beforeEach(function() {
+      resetPrivate();
+    });
+    
+    it("adds 'available' to the chain, calls 'before()' and sets 'available_on'", function() {
+      var before = new Date(2015, 4, 2, 12, 24, 48, 753),
+          self = stripe.available().before(before);
+          
+      expect(stripe._chain).to.have.members(['available', 'before']);
+      expect(stripe._stripeOptions.created).to.be.undefined;
+      expect(stripe._stripeOptions.available_on).to.exist;
+      expect(stripe._stripeOptions.available_on).to.have.property('lt', Math.ceil(before.getTime() / 1000));
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'available' to the chain, calls 'after()' and sets 'available_on'", function() {
+      var after = new Date(2015, 4, 2, 12, 24, 48, 753),
+          self = stripe.available().after(after);
+      
+      expect(stripe._chain).to.have.members(['available', 'after']);
+      expect(stripe._stripeOptions.created).to.be.undefined;
+      expect(stripe._stripeOptions.available_on).to.exist;
+      expect(stripe._stripeOptions.available_on).to.have.property('gt', Math.floor(after.getTime() / 1000));
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'available' to the chain, calls 'from()' and sets 'available_on'", function() {
+      var from = new Date(2015, 4, 2, 12, 24, 48, 753),
+          self = stripe.available().from(from);
+      
+      expect(stripe._chain).to.have.members(['available', 'from']);
+      expect(stripe._stripeOptions.created).to.be.undefined;
+      expect(stripe._stripeOptions.available_on).to.exist;
+      expect(stripe._stripeOptions.available_on).to.have.property('gte', Math.floor(from.getTime() / 1000));
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'available' to the chain, calls 'to()' and sets 'available_on'", function() {
+      var to = new Date(2015, 4, 2, 12, 24, 48, 753),
+          self = stripe.available().to(to);
+      
+      expect(stripe._chain).to.have.members(['available', 'to']);
+      expect(stripe._stripeOptions.created).to.be.undefined;
+      expect(stripe._stripeOptions.available_on).to.exist;
+      expect(stripe._stripeOptions.available_on).to.have.property('lte', Math.ceil(to.getTime() / 1000));
       expect(self).to.equal(stripe);
     });
   });
