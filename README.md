@@ -52,65 +52,102 @@ English.
 - `of()`: pure sugar
 - `since(date)`: alias for `from()`, except date is mandatory
 - `until([date])`: alias for `to()`
-- `find()`: sugar allowing to set a limit
+- `entire()`: alias for `all()`
+
+- `for([string])`: alias for `setAccount()` and used for setting customer id, charge id and purpose
+- `find([number])`: sugar allowing to set a limit
 - `last(number)`: limits results to this value
 - `all()`: queries the Stripe API until all the objects are returned
-- `entire()`: alias for `all()`
+- `type(string)`: sets an event type
+
 - `before([mixed])`: may be called with a date or used as a synonym for `ending_before`
 - `after([mixed])`: may be called with a date or used as a synonym for `starting_after`
 - `from([date])`: may be called with a date (inclusive)
 - `to([date])`: may be called with a date (inclusive)
 - `now()`: chain with `to()` or `until()`
+
 - `include(key)`: sets the `include[]` key, Stripe only makes `total_count` available at the moment
+- `setAccount(acct_id)`: sets the account id to use (for Stripe Connect users)
 
-The following methods set the type of object to query and may be used in various ways:
+- `history()`: use the Balance history API for this query, in conjuction with one of:
+  - `charges()`
+  - `refunds()` 
+  - `adjustments()`
+  - `applicationFees()`
+  - `applicationFeeRefunds()`
+  - `transfers()`
+  - `transferFailures()`
 
-- `charges()`: sets object context
-- `charges(callback)` and `charges(progress, callback)`: for executing
+- The following may be used to set context or execute the query in that context:
+  - `charges()`
+  - `customers()`
+  - `plans()`
+  - `coupons()`
+  - `invoices()`
+  - `invoiceItems()`
+  - `transfers()`
+  - `applicationFees()`
+  - `accounts()`
+  - `events()`
+  - `bitcoinReceivers()`
+  - `fileUploads()`
 
-> Complete list of supported objects below
+For executing, a callback must be supplied and an optional progress callback is available as well
+- `charges([progress, ]callback)`
 
-The following values are returned:
+With the following signatures:
 
 - `progress(current, total)`
 - `callback(err, objects)`
 
 It's often clearer to set context early in a sentence and execute later. These methods may be used
-for executing a chain.
+for executing a chain:
 
-- `please(callback)`
-- `please(progress, callback)`
+- `please([progress, ]callback)`
 
 **Supported objects**
 
 - Charges
-- Refunds
+  - Optional `customer` argument set with `for('ch_id')`)
 - Customers
 - Plans
 - Coupons
-- Accounts (Stripe only supports the `limit` argument)
+- Invoices
+- Invoice items
+  - Optional `customer` argument set with `for('ch_id')`)
+- Applications fees
+  - Optional `charge` argument set with `for('ch_id')`)
+- Accounts
+  - Stripe does not support filtering on this object
 - Balance history (through the `history()` method)
   - Optional `type` set through object context methods (`charges()`, `refunds()`, etc)
+- Events
+  - Optional `type` argument set with `type('type')`
+  - [Stripe API reference](https://stripe.com/docs/api/node#event_types)
+- File uploads
+  - Optional `purpose` argument set with `for('purpose')`)
+  - [Stripe API reference](https://stripe.com/docs/api/node#file_upload_object)
 
-**Objects with limited support**
+**Partially supported objects**
 
-- Invoices (without the `customer` argument)
-- Invoice items (without the `customer` argument)
-- Transfers (without the `date` and `status` arguments)
-- Applications fees (without the `charge` argument)
-- Events (without the `type` argument)
-- File uploads (without the `purpose` argument)
+- Refunds
+  - Strictly through Balance history (`refunds().history()`)
+- Disputes
+  - Strictly through adjustments with Balance history (`adjustments().history()`)
+- Transfers
+  - Without the `date`, `recipient` and `status` arguments
+- Bitcoin receivers
+  - Without the `active`, `filled` and `uncaptured_funds` arguments
 
 **Currently unsupported objects**
 
 - Cards
 - Subscriptions
 - Discounts
-- Disputes
 - Transfer reversals
 - Application fee refunds
+- Balance
 - Tokens
-- Bitcoin receivers
 
 **Objects deprecated by Stripe are unsupported**
 

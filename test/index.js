@@ -34,9 +34,6 @@ describe("stripe-chainable", function() {
       charges: {
         list: function(options, callback) {}
       },
-      refunds: {
-        list: function(options, callback) {}
-      },
       customers: {
         list: function(options, callback) {}
       },
@@ -62,6 +59,9 @@ describe("stripe-chainable", function() {
         list: function(options, callback) {}
       },
       events: {
+        list: function(options, callback) {}
+      },
+      bitcoinReceivers: {
         list: function(options, callback) {}
       },
       fileUploads: {
@@ -137,6 +137,18 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
+    it("'type' adds nothing to the chain and throws an error", function() {
+      var self;
+      
+      expect(function() {
+        self = stripe.type();
+      }).to.throw("type() must be called with an event type");
+      
+      expect(stripe._chain).to.be.empty;
+      expect(stripe._stripeOptions.type).to.be.undefined;
+      expect(self).to.be.undefined;
+    });
+    
     it("'entire' adds 'all' to the chain and returns itself", function() {
       var self = stripe.entire();
       
@@ -203,6 +215,21 @@ describe("stripe-chainable", function() {
       expect(stripe._chain).to.be.empty;
       expect(stripe._stripeExtras.stripe_account).to.be.undefined;
       expect(self).to.equal(stripe);
+    });
+    
+    it("'for' without arguments throws an error", function() {
+      var self;
+      
+      expect(function() {
+        self = stripe.for();
+      }).to.throw("for() must be called with an account id, charge id, customer id or file upload purpose");
+      
+      expect(stripe._chain).to.be.empty;
+      expect(stripe._stripeExtras.stripe_account).to.be.undefined;
+      expect(stripe._stripeOptions.customer).to.be.undefined;
+      expect(stripe._stripeOptions.charge).to.be.undefined;
+      expect(stripe._stripeOptions.purpose).to.be.undefined;
+      expect(self).to.be.undefined;
     });
     
     it("adds 'history' to the chain and returns itself", function() {
@@ -333,6 +360,14 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
+    it("adds 'bitcoinReceivers' to the chain and returns itself", function() {
+      var self = stripe.bitcoinReceivers();
+      
+      expect(stripe._chain).to.have.members(['bitcoinReceivers']);
+      expect(stripe._options.type).to.equal('bitcoinReceiver');
+      expect(self).to.equal(stripe);
+    });
+    
     it("adds 'fileUploads' to the chain and returns itself", function() {
       var self = stripe.fileUploads();
       
@@ -397,6 +432,25 @@ describe("stripe-chainable", function() {
       }).to.throw("last() must be called with a numeric value");
       
       expect(stripe._chain).to.be.empty;
+    });
+    
+    it("adds 'type' to the chain, sets 'type' and returns itself", function() {
+      var self = stripe.type('account.updated');
+      
+      expect(stripe._chain).to.have.members(['type']);
+      expect(stripe._stripeOptions.type).to.equal('account.updated');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("'type' adds nothing to the chain and throws an error", function() {
+      var self;
+      
+      expect(function() {
+        self = stripe.type(42);
+      }).to.throw("type() must be called with an event type");
+      
+      expect(stripe._chain).to.be.empty;
+      expect(self).to.be.undefined;
     });
     
     it("adds 'before' to the chain, sets 'ending_before' and returns itself", function() {
@@ -504,6 +558,38 @@ describe("stripe-chainable", function() {
       expect(stripe._stripeExtras.stripe_account).to.equal('acct_x');
       expect(self).to.equal(stripe);
     });
+    
+    it("'for' is an alias for 'setAccount'", function() {
+      var self = stripe.for('acct_x');
+      
+      expect(stripe._chain).to.be.empty;
+      expect(stripe._stripeExtras.stripe_account).to.equal('acct_x');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("'for' sets customer id", function() {
+      var self = stripe.for('cus_x');
+      
+      expect(stripe._chain).to.have.members(['for']);
+      expect(stripe._stripeOptions.customer).to.equal('cus_x');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("'for' sets charge id", function() {
+      var self = stripe.for('ch_x');
+      
+      expect(stripe._chain).to.have.members(['for']);
+      expect(stripe._stripeOptions.charge).to.equal('ch_x');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("'for' sets purpose", function() {
+      var self = stripe.for('identity_document');
+      
+      expect(stripe._chain).to.have.members(['for']);
+      expect(stripe._stripeOptions.purpose).to.equal('identity_document');
+      expect(self).to.equal(stripe);
+    });
   });
   
   describe("execute chainable operators by themselves, with parameters", function() {
@@ -575,28 +661,6 @@ describe("stripe-chainable", function() {
       expect(stripe._chain).to.be.empty;
       expect(stripe._options.type).to.be.undefined;
       sinon.assert.calledOnce(callbackSpy);
-      expect(self).to.equal(stripe);
-    });
-    
-    it("adds 'refunds' to the chain, calls progress and then callback", function() {
-      var progressSpy = sinon.spy(),
-          callbackSpy = sinon.spy();
-          
-      var listStub = sinon.stub(stripe._stripe.refunds, 'list');
-      listStub.yields(null, {
-        "has_more": false,
-        "data": [{
-          "id": "re_xxxxxxxxxxxxxxxxxxxxxxxx"
-        }]
-      });
-      
-      var self = stripe.refunds(progressSpy, callbackSpy);
-      
-      expect(stripe._chain).to.have.members(['refunds']);
-      expect(stripe._options.type).to.equal('refund');
-      sinon.assert.calledOnce(progressSpy);
-      sinon.assert.calledOnce(callbackSpy);
-      sinon.assert.callOrder(progressSpy, callbackSpy);
       expect(self).to.equal(stripe);
     });
     
@@ -792,6 +856,28 @@ describe("stripe-chainable", function() {
       
       expect(stripe._chain).to.have.members(['events']);
       expect(stripe._options.type).to.equal('event');
+      sinon.assert.calledOnce(progressSpy);
+      sinon.assert.calledOnce(callbackSpy);
+      sinon.assert.callOrder(progressSpy, callbackSpy);
+      expect(self).to.equal(stripe);
+    });
+    
+    it("adds 'bitcoinReceivers' to the chain, calls progress and then callback", function() {
+      var progressSpy = sinon.spy(),
+          callbackSpy = sinon.spy();
+          
+      var listStub = sinon.stub(stripe._stripe.bitcoinReceivers, 'list');
+      listStub.yields(null, {
+        "has_more": false,
+        "data": [{
+          "id": "btcrcv_xxxxxxxxxxxxxxxxxxxxxxxx"
+        }]
+      });
+      
+      var self = stripe.bitcoinReceivers(progressSpy, callbackSpy);
+      
+      expect(stripe._chain).to.have.members(['bitcoinReceivers']);
+      expect(stripe._options.type).to.equal('bitcoinReceiver');
       sinon.assert.calledOnce(progressSpy);
       sinon.assert.calledOnce(callbackSpy);
       sinon.assert.callOrder(progressSpy, callbackSpy);
