@@ -94,6 +94,13 @@ describe("stripe-chainable", function() {
       expect(self).to.equal(stripe);
     });
     
+    it("'that' adds nothing to the chain and returns itself", function() {
+      var self = stripe.that();
+      
+      expect(stripe._chain).to.be.empty;
+      expect(self).to.equal(stripe);
+    });
+    
     it("'since' adds nothing to the chain and throws an error", function() {
       expect(function() {
         stripe.since();
@@ -135,6 +142,18 @@ describe("stripe-chainable", function() {
       expect(stripe._options.retrieveAll).to.be.true;
       expect(stripe._options.type).to.be.undefined;
       expect(self).to.equal(stripe);
+    });
+    
+    it("'are' add nothing to the chain and throws an error", function() {
+      var self;
+      
+      expect(function() {
+        self = stripe.are();
+      }).to.throw("are() must be called with a status string");
+      
+      expect(stripe._chain).to.be.empty;
+      expect(stripe._stripeOptions.status).to.be.undefined;
+      expect(self).to.be.undefined;
     });
     
     it("'type' adds nothing to the chain and throws an error", function() {
@@ -432,6 +451,25 @@ describe("stripe-chainable", function() {
       }).to.throw("last() must be called with a numeric value");
       
       expect(stripe._chain).to.be.empty;
+    });
+    
+    it("adds 'are' to the chain, sets 'status' and returns itself", function() {
+      var self = stripe.are('pending');
+      
+      expect(stripe._chain).to.have.members(['are']);
+      expect(stripe._stripeOptions.status).to.equal('pending');
+      expect(self).to.equal(stripe);
+    });
+    
+    it("'are' adds nothing to the chain and throws an error", function() {
+      var self;
+      
+      expect(function() {
+        self = stripe.are(42);
+      }).to.throw("are() must be called with a status string");
+      
+      expect(stripe._chain).to.be.empty;
+      expect(self).to.be.undefined;
     });
     
     it("adds 'type' to the chain, sets 'type' and returns itself", function() {

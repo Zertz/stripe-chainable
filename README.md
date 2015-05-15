@@ -50,6 +50,7 @@ English.
 
 - `and()`: pure sugar
 - `of()`: pure sugar
+- `that()`: pure sugar
 - `since(date)`: alias for `from()`, except date is mandatory
 - `until([date])`: alias for `to()`
 - `entire()`: alias for `all()`
@@ -58,6 +59,7 @@ English.
 - `find([number])`: sugar allowing to set a limit
 - `last(number)`: limits results to this value
 - `all()`: queries the Stripe API until all the objects are returned
+- `are(string)`: sets a status
 - `type(string)`: sets an event type
 
 - `before([mixed])`: may be called with a date or used as a synonym for `ending_before`
@@ -135,7 +137,7 @@ for executing a chain:
 - Disputes
   - Strictly through adjustments with Balance history (`adjustments().history()`)
 - Transfers
-  - Without the `date`, `recipient` and `status` arguments
+  - The `status` argument is supported, but not `date` nor `recipient`
 - Bitcoin receivers
   - Without the `active`, `filled` and `uncaptured_funds` arguments
 
