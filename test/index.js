@@ -10,23 +10,13 @@ describe("stripe-chainable", function() {
   
   var resetPrivate = function() {
     stripe._chain = [];
-    
-    stripe._options = {
-      retrieveAll: false
-    };
-    
-    stripe._stripeOptions = {
-      type: undefined,
-      limit: undefined,
-      "include[]": undefined
-    };
-    
-    stripe._stripeExtras = {
-      stripe_account: undefined
-    };
+    stripe._options = {},
+    stripe._stripeOptions = {},
+    stripe._stripeExtras = {}
   };
   
   beforeEach(function() {
+    stripe._reset = function() {};
     stripe._stripe = {
       balance: {
         listTransactions: function(options, callback) {}
@@ -78,7 +68,9 @@ describe("stripe-chainable", function() {
   });
   
   describe("chainable operators by themselves, without parameters", function() {
-    beforeEach(resetPrivate);
+    beforeEach(function() {
+      resetPrivate();
+    });
     
     it("'and' adds nothing to the chain and returns itself", function() {
       var self = stripe.and();
@@ -397,7 +389,9 @@ describe("stripe-chainable", function() {
   });
   
   describe("chainable operators by themselves, with parameters", function() {
-    beforeEach(resetPrivate);
+    beforeEach(function() {
+      resetPrivate();
+    });
     
     it("'since' adds 'from' to the chain, sets 'created.gte' and returns itself", function() {
       var since = new Date(2015, 4, 2, 12, 24, 48, 753),
@@ -631,7 +625,9 @@ describe("stripe-chainable", function() {
   });
   
   describe("execute chainable operators by themselves, with parameters", function() {
-    beforeEach(resetPrivate);
+    beforeEach(function() {
+      resetPrivate();
+    });
     
     it("adds 'charges' to the chain, calls progress and then callback", function() {
       var progressSpy = sinon.spy(),
@@ -690,7 +686,7 @@ describe("stripe-chainable", function() {
     
     it("adds nothing to the chain, calls listTransactions' callback with an error", function() {
       var callbackSpy = sinon.spy();
-          
+      
       var listStub = sinon.stub(stripe._stripe.balance, 'listTransactions');
       listStub.yields(stripe._stripe._errors.invalid_request_error);
       
@@ -946,7 +942,9 @@ describe("stripe-chainable", function() {
   });
   
   describe("combine and execute chainable operators, without parameters", function() {
-    beforeEach(resetPrivate);
+    beforeEach(function() {
+      resetPrivate();
+    });
     
     it("adds 'charges' to the chain, calls progress twice and then callback once", function() {
       var progressSpy = sinon.spy(),
