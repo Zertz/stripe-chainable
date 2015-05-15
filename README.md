@@ -10,7 +10,7 @@ stripe.find().last(150).charges(function(err, charges) {
 ```
 
 ```javascript
-stripe.find().entire().charges().history().since(new Date(2015, 0, 1)).please(function(err, balance) {
+stripe.entire().charges().history().since(new Date(2015, 0, 1)).please(function(err, balance) {
   // What he said
 });
 ```
@@ -110,13 +110,13 @@ for executing a chain:
 **Supported objects**
 
 - Charges
-  - Optional `customer` argument set with `for('ch_id')`)
+  - Optional `customer` argument set with `for('cus_id')`)
 - Customers
 - Plans
 - Coupons
 - Invoices
 - Invoice items
-  - Optional `customer` argument set with `for('ch_id')`)
+  - Optional `customer` argument set with `for('cus_id')`)
 - Applications fees
   - Optional `charge` argument set with `for('ch_id')`)
 - Accounts
@@ -176,34 +176,30 @@ few examples.
 #### List
 
 ```javascript
-stripe.find().all().charges().since(new Date(2015, 0, 1)).please(function(err, charges) {
+stripe.find().all().charges().since(new Date(2015, 0, 1)).please(function(current, total) {
+  console.info('%d / %d', current, total)
+}, function(err, charges) {
   // All charges in 2015 up until now
 });
 ```
 
 ```javascript
-stripe.find(50).customers().after(new Date(2014, 11, 31)).and().before(new Date(2015, 1, 1)).please(function(err, charges) {
-  // Last 50 charges of January 2015
+stripe.find().last(50).customers().after(new Date(2014, 11, 31)).please(function(err, customers) {
+  // Last 50 customers created after December 31st 2014
 });
 ```
 
 ```javascript
-stripe.find().all().refunds().from(new Date(2015, 0, 1)).to(new Date(2015, 0, 31)).please(function(err, charges) {
-  // All charges during January 2015
+stripe.find().all().transfers().that().are('pending').please(function(err, transfers) {
+  // All pending transfers
 });
 ```
 
 #### Balance
 
 ```javascript
-stripe.entire().history().of().applicationFees().since(new Date(2015, 0, 1)).and().include('total_count').please(function(progress, total) {
-  console.info('%d / %d', progress, total);
-}, function(err, charges) {
-  if (err) {
-    return next(err);
-  }
-  
-  res.status(200).json(charges);
+stripe.entire().history().of().applicationFees().from(new Date(2015, 3, 1)).until().now().and().include('total_count').please(function(err, balance) {
+  // Self-explanatory
 });
 ```
 
