@@ -22,7 +22,7 @@
   "keywords": ["stripe", "chainable", "sugar"],
   "dependencies": {
     "inflection": "~1.7.0",
-    "lodash": "~3.8.0",
+    "lodash": "~3.9.0",
     "stripe": "~3.3.0"
   },
   "devDependencies": {
