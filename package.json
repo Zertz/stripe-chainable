@@ -8,6 +8,11 @@
     "email": "info@fluidapps.ca",
     "url": "https://fluidapps.ca"
   },
+  "contributors": [{
+    "name": "Pier-Luc Gendreau",
+    "email": "info@fluidapps.ca",
+    "url": "https://fluidapps.ca"
+  }],
   "repository": {
     "type": "git",
     "url": "git://github.com/FluidApps/stripe-chainable.git"
@@ -17,7 +22,7 @@
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
   "engines": {
-    "node": "~0.10.0"
+    "node": ">=0.8 <=0.12.0"
   },
   "keywords": ["stripe", "chainable", "sugar"],
   "dependencies": {
@@ -30,8 +35,5 @@
     "chai": "~2.3.0",
     "sinon": "~1.14.0"
   },
-  "licenses": [{
-    "type": "MIT",
-    "url": "http://github.com/FluidApps/stripe-chainable/raw/master/LICENSE"
-  }]
+  "license": "MIT"
 }
