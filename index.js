@@ -1,1 +1,1 @@
-module.exports = require('./lib/stripe-chainable');
+module.exports = require('./lib/stripe-chainable')

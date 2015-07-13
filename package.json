@@ -19,6 +19,7 @@
   },
   "main": "index.js",
   "scripts": {
+    "pretest": "standard",
     "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
   "engines": {
@@ -33,7 +34,11 @@
   "devDependencies": {
     "mocha": "~2.2.0",
     "chai": "~2.3.0",
-    "sinon": "~1.14.0"
+    "sinon": "~1.14.0",
+    "standard": "^4.0.0"
+  },
+  "standard": {
+    "global": [ "describe", "it", "beforeEach", "after" ]
   },
   "license": "MIT"
 }
