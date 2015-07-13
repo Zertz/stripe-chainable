@@ -1,7 +1,7 @@
 {
   "name": "stripe-chainable",
   "description": "Syntactic sugar for stripe-node",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "homepage": "https://github.com/FluidApps/stripe-chainable",
   "author": {
     "name": "FluidApps",
