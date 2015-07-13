@@ -27,14 +27,14 @@
   },
   "keywords": ["stripe", "chainable", "sugar"],
   "dependencies": {
-    "inflection": "~1.7.0",
-    "lodash": "~3.9.0",
-    "stripe": "~3.3.0"
+    "inflection": "^1.0.0",
+    "lodash": "^3.0.0",
+    "stripe": "^3.0.0"
   },
   "devDependencies": {
-    "mocha": "~2.2.0",
-    "chai": "~2.3.0",
-    "sinon": "~1.14.0",
+    "mocha": "^2.0.0",
+    "chai": "^3.0.0",
+    "sinon": "^1.0.0",
     "standard": "^4.0.0"
   },
   "standard": {
