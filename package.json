@@ -19,8 +19,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "pretest": "standard",
-    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+    "test": "mocha -R spec",
+    "test-ci": "standard && istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
   "engines": {
     "node": ">=0.10"
