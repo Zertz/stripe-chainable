@@ -28,8 +28,10 @@
   "keywords": ["stripe", "chainable", "sugar"],
   "dependencies": {
     "inflection": "^1.0.0",
-    "lodash": "^3.0.0",
-    "stripe": "^3.0.0"
+    "lodash": "^3.0.0"
+  },
+  "peerDependencies": {
+    "stripe": "^4.0.0"
   },
   "devDependencies": {
     "mocha": "^2.0.0",
