@@ -1,4 +1,4 @@
-stripe-chainable [![Build Status](https://travis-ci.org/Zertz/stripe-chainable.svg?branch=master)](https://travis-ci.org/Zertz/stripe-chainable) [![npm package](https://badge.fury.io/js/stripe-chainable.svg)](https://www.npmjs.com/package/stripe-chainable)
+stripe-chainable [![Build Status](https://travis-ci.org/Zertz/stripe-chainable.svg?branch=master)](https://travis-ci.org/Zertz/stripe-chainable) [![npm package](https://badge.fury.io/js/stripe-chainable.svg)](https://www.npmjs.com/package/stripe-chainable) [![Coverage Status](https://coveralls.io/repos/Zertz/stripe-chainable/badge.svg?branch=master&service=github)](https://coveralls.io/github/Zertz/stripe-chainable?branch=master)
 ================
 
 Syntactic sugar for [stripe-node](https://github.com/stripe/stripe-node)
