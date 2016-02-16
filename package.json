@@ -1,7 +1,7 @@
 {
   "name": "stripe-chainable",
   "description": "Syntactic sugar for stripe-node",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "homepage": "https://github.com/Zertz/stripe-chainable",
   "author": "Pier-Luc Gendreau",
   "repository": {
