@@ -8,6 +8,7 @@ sudo: false
 before_script:
   - npm i stripe@^4.0.0
 script:
-  - npm run test-ci
+  - npm run lint
+  - npm run test-coverage
 after_script:
   - npm install coveralls@^2.0.0 && cat ./coverage/lcov.info | coveralls

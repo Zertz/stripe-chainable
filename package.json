@@ -10,8 +10,11 @@
   },
   "main": "index.js",
   "scripts": {
+    "lint": "standard",
+    "pretest": "npm run lint",
     "test": "mocha -R spec",
-    "test-ci": "standard && istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+    "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
+    "prepublish": "npm run lint && npm test"
   },
   "engines": {
     "node": ">=0.10"
