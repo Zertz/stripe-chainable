@@ -1,11 +1,10 @@
 language: node_js
 node_js:
-  - "0.10"
   - "0.12"
-  - "iojs"
+  - "4"
   - "node"
 sudo: false
-before_script:
+before_install:
   - npm i stripe@^4.0.0
 script:
   - npm run lint
