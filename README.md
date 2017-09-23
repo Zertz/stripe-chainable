@@ -41,7 +41,7 @@ Exactly the same as, well, Stripe.
 > Your key goes straight to Stripe's module, not even an internal reference is kept.
 
 What?
------ 
+-----
 
 ### Sugar
 
@@ -74,7 +74,7 @@ English.
 
 - `history()`: use the Balance history API for this query, in conjuction with one of:
   - `charges()`
-  - `refunds()` 
+  - `refunds()`
   - `adjustments()`
   - `applicationFees()`
   - `applicationFeeRefunds()`
@@ -85,6 +85,7 @@ English.
   - `charges()`
   - `customers()`
   - `plans()`
+  - `subcriptions()`
   - `coupons()`
   - `invoices()`
   - `invoiceItems()`
