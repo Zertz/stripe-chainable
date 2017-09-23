@@ -26,6 +26,9 @@ describe('stripe-chainable', function () {
       plans: {
         list: function (options, callback) {}
       },
+      subscriptions: {
+        list: function (options, callback) {}
+      },
       coupons: {
         list: function (options, callback) {}
       },
@@ -329,6 +332,14 @@ describe('stripe-chainable', function () {
 
       expect(stripe._chain).to.have.members(['plans'])
       expect(stripe._options.type).to.equal('plan')
+      expect(self).to.equal(stripe)
+    })
+
+    it("adds 'subscriptions' to the chain and returns itself", function () {
+      var self = stripe.subscriptions()
+
+      expect(stripe._chain).to.have.members(['subscriptions'])
+      expect(stripe._options.type).to.equal('subscription')
       expect(self).to.equal(stripe)
     })
 
@@ -803,6 +814,28 @@ describe('stripe-chainable', function () {
 
       expect(stripe._chain).to.have.members(['plans'])
       expect(stripe._options.type).to.equal('plan')
+      sinon.assert.calledOnce(progressSpy)
+      sinon.assert.calledOnce(callbackSpy)
+      sinon.assert.callOrder(progressSpy, callbackSpy)
+      expect(self).to.equal(stripe)
+    })
+
+    it("adds 'subscriptions' to the chain, calls progress and then callback", function () {
+      var progressSpy = sinon.spy()
+      var callbackSpy = sinon.spy()
+
+      var listStub = sinon.stub(stripe._stripe.subscriptions, 'list')
+      listStub.yields(null, {
+        'has_more': false,
+        'data': [{
+          'id': 'sub_xxxxxxxxxxxxxx'
+        }]
+      })
+
+      var self = stripe.subscriptions(progressSpy, callbackSpy)
+
+      expect(stripe._chain).to.have.members(['subscriptions'])
+      expect(stripe._options.type).to.equal('subscription')
       sinon.assert.calledOnce(progressSpy)
       sinon.assert.calledOnce(callbackSpy)
       sinon.assert.callOrder(progressSpy, callbackSpy)
