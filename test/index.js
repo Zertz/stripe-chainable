@@ -1,4 +1,4 @@
-// tests/index.js
+/* eslint no-unused-expressions: 0 */
 
 var expect = require('chai').expect
 var sinon = require('sinon')
