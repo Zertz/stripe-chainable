@@ -269,10 +269,6 @@ npm install
 npm test
 ```
 
-## Who?
-
-[FluidApps](https://fluidapps.ca/) and the community.
-
 ## Can I use?
 
 Yes, `stripe-chainable` is MIT licensed.
