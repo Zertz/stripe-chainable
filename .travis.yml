@@ -4,8 +4,8 @@ node_js:
   - "8"
   - "6"
 before_install:
-  - yarn add stripe@^6.0.0 --no-save
+  - npm i stripe@^6.0.0 --no-save
 script:
-  - yarn test-coverage
+  - npm run test-coverage
 after_script:
-  - yarn add coveralls@^3.0.0 && cat ./coverage/lcov.info | coveralls
+  - npm i coveralls@^3.0.0 && cat ./coverage/lcov.info | coveralls
