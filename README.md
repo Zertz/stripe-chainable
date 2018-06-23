@@ -34,7 +34,7 @@ bunch of objects you're looking for**.
 
 ## Where?
 
-`npm install stripe-chainable`
+`npm install stripe-chainable` or `yarn add stripe-chainable`
 
 ## How?
 
@@ -265,7 +265,7 @@ stripe
 Yes, according to [mocha](https://github.com/mochajs/mocha), [chai](https://github.com/chaijs/chai), [sinon](https://github.com/cjohansen/Sinon.JS/) and [istanbul](https://github.com/gotwarlost/istanbul).
 
 ```
-npm i
+npm install
 npm test
 ```
 
