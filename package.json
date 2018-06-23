@@ -16,7 +16,7 @@
     "prepublishOnly": "npm test"
   },
   "engines": {
-    "node": ">=0.10"
+    "node": ">=6"
   },
   "keywords": [
     "stripe",
