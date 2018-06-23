@@ -1,38 +1,42 @@
-stripe-chainable [![Build Status](https://travis-ci.org/Zertz/stripe-chainable.svg?branch=master)](https://travis-ci.org/Zertz/stripe-chainable) [![npm package](https://badge.fury.io/js/stripe-chainable.svg)](https://www.npmjs.com/package/stripe-chainable) [![Coverage Status](https://coveralls.io/repos/Zertz/stripe-chainable/badge.svg?branch=master&service=github)](https://coveralls.io/github/Zertz/stripe-chainable?branch=master)
-================
+# stripe-chainable [![Build Status](https://travis-ci.org/Zertz/stripe-chainable.svg?branch=master)](https://travis-ci.org/Zertz/stripe-chainable) [![npm package](https://badge.fury.io/js/stripe-chainable.svg)](https://www.npmjs.com/package/stripe-chainable) [![Coverage Status](https://coveralls.io/repos/Zertz/stripe-chainable/badge.svg?branch=master&service=github)](https://coveralls.io/github/Zertz/stripe-chainable?branch=master)
 
 Syntactic sugar for [stripe-node](https://github.com/stripe/stripe-node)
 
 ```javascript
-stripe.find().last(150).charges(function(err, charges) {
-  // 'nuff said
-});
+stripe
+  .find()
+  .last(150)
+  .charges(function(err, charges) {
+    // 'nuff said
+  });
 ```
 
 ```javascript
-stripe.entire().charges().history().since(new Date(2015, 0, 1)).please(function(err, balance) {
-  // What he said
-});
+stripe
+  .entire()
+  .charges()
+  .history()
+  .since(new Date(2015, 0, 1))
+  .please(function(err, balance) {
+    // What he said
+  });
 ```
 
-Why?
-----
+## Why?
 
 We believe the folks over at Stripe built an awesome API, but found it a bit lacking
 when it came to generating ~~boring~~ detailed reports. With that in mind, we designed
-a set of *intuitive* methods for crafting *beautiful* queries.
+a set of _intuitive_ methods for crafting _beautiful_ queries.
 
 Indeed, `stripe-chainable` is intentionally limited in scope and very much complementary
 to Stripe's module. In fact, it focuses on a single operation: **retrieving exactly the
 bunch of objects you're looking for**.
 
-Where?
-------
+## Where?
 
 `npm install stripe-chainable`
 
-How?
-----
+## How?
 
 Exactly the same as, well, Stripe.
 
@@ -40,8 +44,7 @@ Exactly the same as, well, Stripe.
 
 > Your key goes straight to Stripe's module, not even an internal reference is kept.
 
-What?
------
+## What?
 
 ### Sugar
 
@@ -73,6 +76,7 @@ English.
 - `setAccount(acct_id)`: sets the account id to use (for Stripe Connect users)
 
 - `history()`: use the Balance history API for this query, in conjuction with one of:
+
   - `charges()`
   - `refunds()`
   - `adjustments()`
@@ -97,6 +101,7 @@ English.
   - `fileUploads()`
 
 For executing, a callback must be supplied and an optional progress callback is available as well
+
 - `charges([progress, ]callback)`
 
 With the following signatures:
@@ -161,15 +166,18 @@ for executing a chain:
 
 ### Feature
 
-Yes, that's feature. Without an *s*.
+Yes, that's feature. Without an _s_.
 
 The Stripe API limits the number of objects returned to 100. Fair enough, but what if you
 need more?
 
 ```javascript
-stripe.find().all().charges(function(err, charges) {
-  // They're all here, automatically queried and concatenated.
-});
+stripe
+  .find()
+  .all()
+  .charges(function(err, charges) {
+    // They're all here, automatically queried and concatenated.
+  });
 ```
 
 ### Wait, what?
@@ -180,43 +188,79 @@ few examples.
 #### List
 
 ```javascript
-stripe.find().all().charges().since(new Date(2015, 0, 1)).please(function(current, total) {
-  console.info('%d / %d', current, total)
-}, function(err, charges) {
-  // All charges in 2015 up until now
-});
+stripe
+  .find()
+  .all()
+  .charges()
+  .since(new Date(2015, 0, 1))
+  .please(
+    function(current, total) {
+      console.info("%d / %d", current, total);
+    },
+    function(err, charges) {
+      // All charges in 2015 up until now
+    }
+  );
 ```
 
 ```javascript
-stripe.find().last(50).customers().after(new Date(2014, 11, 31)).please(function(err, customers) {
-  // Last 50 customers created after December 31st 2014
-});
+stripe
+  .find()
+  .last(50)
+  .customers()
+  .after(new Date(2014, 11, 31))
+  .please(function(err, customers) {
+    // Last 50 customers created after December 31st 2014
+  });
 ```
 
 ```javascript
-stripe.find().all().transfers().that().are('pending').please(function(err, transfers) {
-  // All pending transfers
-});
+stripe
+  .find()
+  .all()
+  .transfers()
+  .that()
+  .are("pending")
+  .please(function(err, transfers) {
+    // All pending transfers
+  });
 ```
 
 #### Balance
 
 ```javascript
-stripe.entire().history().of().applicationFees().from(new Date(2015, 3, 1)).until().now().and().include('total_count').please(function(err, balance) {
-  // Self-explanatory
-});
+stripe
+  .entire()
+  .history()
+  .of()
+  .applicationFees()
+  .from(new Date(2015, 3, 1))
+  .until()
+  .now()
+  .and()
+  .include("total_count")
+  .please(function(err, balance) {
+    // Self-explanatory
+  });
 ```
 
 ```javascript
-stripe.entire().history().available().from(new Date(2015, 4, 1)).please(function(progress, total) {
-  console.info('%d / %d', progress, total);
-}, function(err, charges) {
-  // Self-explanatory
-});
+stripe
+  .entire()
+  .history()
+  .available()
+  .from(new Date(2015, 4, 1))
+  .please(
+    function(progress, total) {
+      console.info("%d / %d", progress, total);
+    },
+    function(err, charges) {
+      // Self-explanatory
+    }
+  );
 ```
 
-Does it work?
--------------
+## Does it work?
 
 Yes, according to [mocha](https://github.com/mochajs/mocha), [chai](https://github.com/chaijs/chai), [sinon](https://github.com/cjohansen/Sinon.JS/) and [istanbul](https://github.com/gotwarlost/istanbul).
 
@@ -225,12 +269,10 @@ npm i
 npm test
 ```
 
-Who?
-----
+## Who?
 
 [FluidApps](https://fluidapps.ca/) and the community.
 
-Can I use?
-----------
+## Can I use?
 
 Yes, `stripe-chainable` is MIT licensed.

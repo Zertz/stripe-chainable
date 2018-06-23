@@ -10,11 +10,10 @@
   },
   "main": "index.js",
   "scripts": {
-    "lint": "standard",
-    "pretest": "npm run lint",
+    "prettier": "prettier --write **/*.js",
     "test": "mocha -R spec",
     "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
-    "prepublishOnly": "npm run lint && npm test"
+    "prepublishOnly": "npm test"
   },
   "engines": {
     "node": ">=0.10"
@@ -38,16 +37,8 @@
     "chai": "^4.0.0",
     "istanbul": "^0.4.0",
     "mocha": "^4.1.0",
-    "sinon": "^4.0.0",
-    "standard": "^10.0.0"
-  },
-  "standard": {
-    "global": [
-      "describe",
-      "it",
-      "beforeEach",
-      "after"
-    ]
+    "prettier": "^1.13.5",
+    "sinon": "^4.0.0"
   },
   "license": "MIT"
 }
