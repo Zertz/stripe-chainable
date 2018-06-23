@@ -3,9 +3,11 @@ node_js:
   - "10"
   - "8"
   - "6"
-before_install:
+install:
+  - npm i
+  - npm i coveralls@^3.0.0
   - npm i stripe@^6.0.0
 script:
   - npm run test-coverage
 after_script:
-  - npm i coveralls@^3.0.0 && cat ./coverage/lcov.info | coveralls
+  - cat ./coverage/lcov.info | coveralls
